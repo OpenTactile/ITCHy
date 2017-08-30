@@ -1,1 +1,2 @@
 #include <itchy/itchy.h>
+#include <itchy/tactilemousequery.h>
