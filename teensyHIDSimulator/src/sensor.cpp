@@ -110,56 +110,35 @@ void Sensor::adns_com_end()
 
 byte Sensor::adns_read_reg(byte reg_addr)
 {
-    adns_com_begin();
-
-    // send adress of the register, with MSBit = 0 to indicate it's a read
+    adns_com_begin();    
     SPI.transfer(reg_addr & 0x7f );
-    delayMicroseconds(100); // tSRAD
-    // read data
+    delayMicroseconds(100);
     byte data = SPI.transfer(0);
-
-    delayMicroseconds(1); // tSCLK-NCS for read operation is 120ns
+    delayMicroseconds(1);
     adns_com_end();
-    delayMicroseconds(19); //  tSRW/tSRR (=20us) minus tSCLK-NCS
-
+    delayMicroseconds(19);
     return data;
 }
 
 void Sensor::adns_write_reg(byte reg_addr, byte data)
 {
-    adns_com_begin();
-
-    //send adress of the register, with MSBit = 1 to indicate it's a write
+    adns_com_begin();    
     SPI.transfer(reg_addr | 0x80 );
-    //sent data
     SPI.transfer(data);
-
-    delayMicroseconds(20); // tSCLK-NCS for write operation
+    delayMicroseconds(20);
     adns_com_end();
-    delayMicroseconds(100); // tSWW/tSWR (=120us) minus tSCLK-NCS. Could be shortened, but is looks like a safe lower bound
+    delayMicroseconds(100);
 }
 
 void Sensor::uploadFirmware()
-{
-    // send the firmware to the chip, cf p.18 of the datasheet
-    // set the configuration_IV register in 3k firmware mode
-    adns_write_reg(REG_Configuration_IV, 0x02); // bit 1 = 1 for 3k mode, other bits are reserved
-
-    // write 0x1d in SROM_enable reg for initializing
+{    
+    adns_write_reg(REG_Configuration_IV, 0x02);
     adns_write_reg(REG_SROM_Enable, 0x1d);
-
-    // wait for more than one frame period
-    delay(10); // assume that the frame rate is as low as 100fps... even if it should never be that low
-
-    // write 0x18 to SROM_enable to start SROM download
+    delay(10);
     adns_write_reg(REG_SROM_Enable, 0x18);
-
-    // write the SROM file (=firmware data)
     adns_com_begin();
-    SPI.transfer(REG_SROM_Load_Burst | 0x80); // write burst destination adress
+    SPI.transfer(REG_SROM_Load_Burst | 0x80);
     delayMicroseconds(15);
-
-    // send all bytes of the firmware
     unsigned char c;
     for (int i = 0; i < firmware_length; i++) {
       c = (unsigned char)pgm_read_byte(firmware_data + i);
@@ -175,8 +154,6 @@ vec2f Sensor::integrate()
     short deltaX = 0;
     short deltaY = 0;
 
-    // the motion register should be read before reading any motion data! (refer to docu)
-    // The reading operation freezes the content of delta registers, so they are ready to be read
     byte motion = adns_read_reg(REG_Motion);
 
     // semantic see datasheet
@@ -196,7 +173,6 @@ vec2f Sensor::integrate()
     {
         StatusLED::instance().blink({{255,0,0}}, 1.0);
         StatusLED::instance().blink({{255,128,0}}, 0.5);
-
     }
 
     if(motionFault)

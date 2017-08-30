@@ -1,7 +1,6 @@
 #include "WProgram.h"
 
 #include "types.h"
-
 #include "statusled.h"
 #include "usbmanager.h"
 #include "sensor.h"
