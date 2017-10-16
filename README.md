@@ -30,6 +30,39 @@ We have positive experiences with [Shapeways](https://www.shapeways.com/) for ma
   * mouse_diffusor.stl &rarr; [Acrylic Plastic](https://www.shapeways.com/materials/acrylic-plastic), Transparent Acrylic (Transparent Detail)
 
 ***Important: Always check dimensions of individual parts before printing!***
-  
-    
 
+### Building libITCHy
+libITCHy uses the qmake build system and is available for linux platforms only. For building and installing the library system-wide, please follow these steps within the base directory:
+
+```shell
+mkdir libITCHy-build
+cd libITCHy-build
+qmake ../libITCHy
+make && make install
+```
+
+### Building and flashing the firmware
+Before the Teensy can be flashed, please install Teensyduino by following the [official instructions](https://www.pjrc.com/teensy/td_download.html). Afterwards, building and flashing the firmware is straightforward:
+
+```shell
+cd teensyHIDSimulator
+make
+```
+If the build process was successfull, you can install the firmware by connecting the Teensy (or better say the whole Tactile Mouse) via USB and running
+
+```shell
+make upload
+```
+Afterwards, the RGB LED of the mouse should blink shortly in a orangish color after connecting it to USB.
+
+### Calibrating and testing the sensors
+After libITCHy has been installed, the sensors can be tested using the *ITCHyCalibration* application:
+
+```shell
+mkdir ITCHyCalibration-build
+cd ITCHyCalibration-build
+qmake ../ITCHyCalibration
+make
+./ITCHyCalibration
+```
+***Additional documentation will follow***
