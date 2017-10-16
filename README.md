@@ -6,7 +6,7 @@ ITCHy is a combined input/output device similar to a conventional computer mouse
 ITCHy is intended to be used in conjunction with the [SCRATCHy system](https://github.com/OpenTactile/SCRATCHy).<br>
 However, it can also be used in a stand-alone fashion.
 
-### Parts needed for building the tactile mouse
+### Parts needed for building the Tactile Mouse
 
 Positional und rotational tracking is done using two *ADSN9800 Motion Sensor* boards, both connected to a *PJRC Teensy 3.2* USB Development Board via [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus). By adding some buttons and a RGB LED (optional), additional user interaction is possible.
 
@@ -30,6 +30,27 @@ We have positive experiences with [Shapeways](https://www.shapeways.com/) for ma
   * mouse_diffusor.stl &rarr; [Acrylic Plastic](https://www.shapeways.com/materials/acrylic-plastic), Transparent Acrylic (Transparent Detail)
 
 ***Important: Always check dimensions of individual parts before printing!***
+
+### Parts needed for building the tactile display
+
+Similar to the Tactile Mouse, parts for 3D printing the tactile display are located in the folder *tactileDisplay*. Depending on the PZT actuators to be used, modifications may have to be done to the "spacer" part within the *tactileDisplay.blend* file.
+
+If the parts are printed using Shapeways, the following materials are appropriate:
+
+  * base.stl &rarr; [Strong & Flexible Plastic](https://www.shapeways.com/materials/strong-and-flexible-plastic), e.g. Blue Polished
+  * holder.stl (optional part, not needed for operation)
+  * press_merged.stl &rarr; [Steel](https://www.shapeways.com/materials/steel), e.g. Polished Nickel<br>
+    To save money, both halves of the press have been merged into a single part. Please separate (and clean) the parts manually.
+  * spacer.stl &rarr; [Frosted Ultra Detail](https://www.shapeways.com/materials/frosted-detail-plastic)<br>
+    *Be careful, the small springs are extremely brittle!*
+  * top.stl &rarr; [Strong & Flexible Plastic](https://www.shapeways.com/materials/strong-and-flexible-plastic), e.g. White Polished
+  
+Additional parts needed:
+  * 4x Cylinderhead screw, M2.5 x 30mm
+  * 4x M2.5 nut
+  * Cable for connecting the actuators<br>(depending of the chosen actuator configuration, choose as flexible and light as possible)
+
+Please have a look into the *tactileDisplay.blend* file to get an idea on how to put the parts together.
 
 ### Building libITCHy
 libITCHy uses the qmake build system and is available for linux platforms only. For building and installing the library system-wide, please follow these steps within the base directory:
