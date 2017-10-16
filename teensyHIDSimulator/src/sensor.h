@@ -25,6 +25,7 @@ public:
     vec2l rawPosition();
     void setCalibrationTarget(vec2f target);
     float correctionAngle() const;
+    bool isLifted() const;
 
     CalibrationState calibration();
     void setCalibration(const CalibrationState& cal);
@@ -50,6 +51,7 @@ private:
     vec2f calibrationTarget;
     bool flipX;
     bool flipY;
+    bool lifted;
 
     enum class SensorState
     {

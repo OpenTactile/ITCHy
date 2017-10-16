@@ -77,6 +77,19 @@ void resetSimulation(SimulationState& sim)
     sim.rotation = {{1.0f, 0.0f, 0.0f, 1.0f}};
 }
 
+void resetRotation(SimulationState& sim)
+{
+    // Set relative positions of sensors:
+    sim.positionLeft[0] = sensorLeftOffset[0] + sim.position[0];
+    sim.positionLeft[1] = sensorLeftOffset[1] + sim.position[1];
+
+    sim.positionRight[0] = sensorRightOffset[0] + sim.position[0];
+    sim.positionRight[1] = sensorRightOffset[1] + sim.position[1];
+
+    sim.rawLeft = sim.positionLeft;
+    sim.rawRight = sim.positionRight;
+}
+
 extern "C" int main(void)
 {
     // Peripherals initialization
@@ -501,6 +514,11 @@ extern "C" int main(void)
             else if(thumbButton.query())
             {
                 thumbButtonState = 1;
+            }
+
+            if(leftSensor.isLifted() || rightSensor.isLifted())
+            {
+                resetRotation(sim);
             }
 
             sim.dt = float(simTime) * 1.0e-6f;

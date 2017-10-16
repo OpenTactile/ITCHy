@@ -55,6 +55,7 @@
 
 Sensor::Sensor(std::array<unsigned char, 2> pins, bool flipX, bool flipY)
 {
+    this->lifted = false;
     this->flipX = flipX;
     this->flipY = flipY;
     integrated = {{0,0}};
@@ -161,6 +162,9 @@ vec2f Sensor::integrate()
     bool motionFault = motion & 0x40;
     bool laserValid = motion & 0x20;
 
+    byte SQUAL = adns_read_reg(REG_SQUAL);
+    lifted = (SQUAL < 50);
+
     if(motionOccured && !motionFault && laserValid)
     {
         deltaX = (short) adns_read_reg(REG_Delta_X_L) |
@@ -234,6 +238,11 @@ void Sensor::calibrationStart()
 Sensor::CalibrationState Sensor::calibration()
 {
     return calib;
+}
+
+bool Sensor::isLifted() const
+{
+    return lifted;
 }
 
 void Sensor::setCalibration(const Sensor::CalibrationState& cal)
