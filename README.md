@@ -87,3 +87,19 @@ make
 ./ITCHyCalibration
 ```
 ***Additional documentation will follow***
+
+### Using the Python bindings
+If you prefer to access the Tactile Mouse using Python, the ITCHPy library can be build as follows:
+
+```shell
+cd ITCHPy
+make
+```
+
+To test if all dependencies are met and the whole build process was successful run
+```shell
+python itchpytest.py
+```
+within the same directory.
+
+This file also gives some hints on how to include ITCHPy in your projects.
