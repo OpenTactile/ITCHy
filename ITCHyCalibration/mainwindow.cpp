@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent) :
     canvas->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     scene->setSceneRect(calibRect->rect());
     canvas->fitInView(calibRect, Qt::KeepAspectRatio);
+
+    pollMouse();
 }
 
 void MainWindow::connectPressed()
@@ -86,7 +88,7 @@ void MainWindow::pollMouse()
     if(state.time != 0)
         return;
 
-    //qDebug() << state.position[0] << "," << state.position[1] << " / " << state.angle;
+    qDebug() << state.position[0] << "," << state.position[1] << " / " << state.angle;
     qDebug() << state.leftIncrement[0] << "\t" << state.leftIncrement[1] << "\t/\t" << state.rightIncrement[0] << "\t" << state.rightIncrement[1];
     qDebug() << state.leftSensor[0] << "\t" << state.leftSensor[1] << "\t/\t" << state.rightSensor[0] << "\t" << state.rightSensor[1];
     qDebug() << "v:\t" << state.velocity[0] << "\t" << state.velocity[1];
