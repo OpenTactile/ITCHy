@@ -53,7 +53,9 @@ Additional parts needed:
   * Cable for connecting the actuators<br>(depending of the chosen actuator configuration, choose as flexible and light as possible)
 
 Please have a look into the *tactileDisplay.blend* file to get an idea on how to put the parts together.
+
 **Hint:** Applying some electrical isolation (e.g. some layers of enamel) on the top of the actuators is generally a good idea. Otherwise the driving voltage may come into direct contact with the fingertip!
+
 This is how it should look like after assembling the parts:
 ![Image of the tactile display](documentation/images/tactile_display.jpg)
 
@@ -96,6 +98,7 @@ make
 
 After connecting the tactile mouse and by pressing the *Connect* button, the status area on the left should show "Connected" and the current simulation timestep should be displayed.
 
+##### Calibration procedure
 When connecting the tactile mouse for the first time, a calibration of the sensors is needed. Please follow this procedure for proper calibration:
 1. Use a (probably quite large) hard-plastic mousepad
 2. Mark a distance of e.g. 10cm (or larger depending on the dimensions of the mousepad) in horizontal direction as well as in vertical direction
@@ -113,7 +116,15 @@ The ADNS sensors seem to be quite picky regarding the surface properties of the 
 
 In order to save the new calibration data permanently, press the *Save to EEPROM* button.
 
-*Additional documentation on how to tweak simulation parameters will follow*
+##### Parameter tuning
+The firmware inside the tactile mouse use a simple physics simulation that models the virtual representation of itself as a rigid body attached to the actual sensor position via two springs. The parameters shown in the GUI allow to adjust the simulation parameters such as:
+- The mass of the rigid body,
+- the stiffness of the springs and
+- a damping factor for suppressing oscillations
+
+After changing the values and hitting *Apply* the changes are visible immediately. Again, they will be store permanently after the *Save to EEPROM* button has been pressed.
+
+By adjusting the *USB rate* of the tactile mouse, one can limit the polling rate of the device. This value can be decreased down to 1ms, resulting in a maximum polling rate of 1000Hz. Please note, however, that this may increase the load of the host system (and the kernel actually has to support such high polling rates).
 
 ### Using libITCHy
 *More documentation will follow*
