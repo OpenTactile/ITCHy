@@ -103,3 +103,12 @@ python itchpytest.py
 within the same directory.
 
 This file also gives some hints on how to include ITCHPy in your projects.
+
+
+## API Reference
+
+#### ICTHy
+
+#### TactileMouseQuery
+This class implements the `PositionQuery` defined in libSCRATCHy. Please refer to the [interface documentation](https://github.com/OpenTactile/SCRATCHy#positionquery) for further details.
+ITCHy supports all of the `PositionQuery` calls, such as retrieval of position, orientation, velocity, angular velocity and status of the thumb button. Using the `feedback` method, the colour of the integrated LED can be changed freely.
