@@ -127,7 +127,39 @@ After changing the values and hitting *Apply* the changes are visible immediatel
 By adjusting the *USB rate* of the tactile mouse, one can limit the polling rate of the device. This value can be decreased down to 1ms, resulting in a maximum polling rate of 1000Hz. Please note, however, that this may increase the load of the host system (and the kernel actually has to support such high polling rates).
 
 ### Using libITCHy
-*More documentation will follow*
+Using libITCHy directly (without SCRATCHy) is straightforward, as can be seen in this minimal example program:
+```cpp
+#include <itchy.h>
+#include <cmath>
+
+int main(int argc, char *argv[]) {
+    ITCHy mouse;
+    mouse.connect(); // Wait until the mouse gets connected
+    
+    // This variable will hold the last valid state
+    // e.g. velocity, position, etc.
+    ITCHy::State state = mouse.currentState(); 
+
+    while(state.button == 0) { // Loop until a button on the mouse gets pressed
+        state = mouse.currentState(); // Update state via USB
+        
+        // Change the internal RGB LED
+        mouse.setColor({uint8_t(255 * 10 * state.velocity[0]),
+                        uint8_t(255 * 10 * state.velocity[1]),
+                        uint8_t(255 * state.angle / (2 * M_PI))});
+    }
+
+    mouse.disconnect();
+    return 0;
+}
+```
+This example program should be pretty self-explanatory.
+Compiling and running this application can be done as follows:
+```shell
+g++ -o itchyMinimal minimal.cpp -I/usr/include/itchy/ -lITCHy
+./itchyMinimal
+```
+When moving the tactile mouse, the RGB LED now should change colors according to the current speed and orientation of the device.
 
 ### Using the Python bindings
 If you prefer to access the Tactile Mouse using Python, the ITCHPy library can be build as follows:
