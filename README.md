@@ -181,20 +181,115 @@ This file also gives some hints on how to include ITCHPy in your projects.
 ## API Reference
 
 #### ICTHy
+This class allows to communicate with the hardware device directly (without the need for libSCRATCHy).
+
+The default constructor assumes that the Teensy 3.2 that is used within the mouse can be identified using the ID `{0x16C0, 0x0486, 0xFFAB, 0x0200}`. 
+In case this default has been changed, the ID to connect to can be specified manually by calling `ITCHy({0x????, 0x????, 0x????, 0x????})`
+
 ##### `void connect()`
+Tries to connect to the device via USB periodically. Will return after ITCHy has been successfully initialized. (Blocking operation)
+
+After successfull initialization, the `Connected` callback will be executed.
+
 ##### `bool tryConnect()`
+Tries to connect to the device via USB *once*. Returns `true` if the devices has been initialized successfully or `false` if the device has not been found.
+
+After successfull initialization, the `Connected` callback will be executed.
+
 ##### `void disconnect()`
+Closes the USB device handle and executes the `Disconnected` callback afterwards.
+
 ##### `bool connected() const`
+Returns whether the USB devices has been successfully initialized or not.
 
 ##### `bool setCalibrationParameters(const vec2f& target)`
-##### `bool setSimulationParameters(float mass, float stiffness, float damping, int updateRate)`
-##### `bool setColor(const color& cl)`
-##### `bool startCalibration()`
-##### `bool saveState()`
+Sets the dimensions of the calibration area in metres. Using the *ITCHyCalibration* application is the recommended way to alter this value.
 
-##### `const State& currentState(unsigned int timeout)`
+Returns `false` if the device is not connected or a USB communication error occured.
+
+##### `bool setSimulationParameters(float mass, float stiffness, float damping, int updateRate)`
+Sets the internal simulation parameters of the tactile mouse and causes these values to be used immediately.
+
+In case instabilities occur due to wrong parameters, a total reset of the device is needed!
+Using the *ITCHyCalibration* application is the recommended way to alter this value.
+
+Returns `false` if the device is not connected or a USB communication error occured.
+
+##### `bool setColor(const color& cl)`
+Changes the color of the built in RGB LED. Color values are specified within 0...255 range. 
+
+For example
+```cpp
+setColor({255, 128, 0})
+```
+will cause the LED to emit an orange color, while
+```cpp
+setColor({0, 0, 0})
+```
+will turn off the LED.
+
+Returns `false` if the device is not connected or a USB communication error occured.
+
+##### `bool startCalibration()`
+Initiates the calibration process as has been discussed in section *Calibration procedure*.
+
+Returns `false` if the device is not connected or a USB communication error occured.
+
+##### `bool saveState()`
+Stores the current configuration to the internal EEPROM, causing these settings to be loaded automatically after connecting.
+
+This method will store the following data:
+
+- Size of calibration area
+- Calibration matrix for both sensors
+- Simulation parameters (mass, stiffness, damping and USB update rate)
+
+Returns `false` if the device is not connected or a USB communication error occured.
+
+##### `const State& currentState(unsigned int timeout = 50)`
+Tries to acquire the latest state of the tactile mouse via USB, waiting a maximum of `timeout` milliseconds for the device to react. In case no new data is available or a timeout occured, the last valid state will be returned. 
+
+The returned struct should be self-explanatory:
+```cpp
+struct State {
+  // Actual output (25 bytes)
+  vec2f position;
+  float angle;
+  vec2f velocity;
+  float angularVelocity;
+  byte  button;
+
+  // Raw sensor data (16 bytes)
+  vec2f leftSensor; // equals std::array<float, 2>
+  vec2f rightSensor; // equals std::array<float, 2>
+
+  // Debug data (8 bytes)
+  vec2s leftIncrement;    // Contains sensor delta since last USB frame, equals std::array<int16_t, 2>
+  vec2s rightIncrement;   // Contains sensor delta since last USB frame, equals std::array<int16_t, 2>
+
+  // Simulation info (8 bytes)
+  float timeStep;
+  float time;
+
+  // Unused
+  byte unused[7];
+};
+```
+In case a USB communication error occured, the device will be disconnected and the `CommunicationError` callback will be executed.
 
 ##### `void addCallback(CallbackType type, const std::function<void()>& callback)`
+Allows to register a custom function that will be called if the corresponsing event happens. 
+
+Multiple functions can be added. However, removing them afterwards is currently not supported.
+
+The following example will print an error message in case USB communication failed:
+```cpp
+  itchyinstance.addCallback(
+    ITCHy::CallbackType::CommunicationError, 
+    [](){ // Add lambda function
+      std:cout << "USB error" << std::endl;
+    });
+```
 
 #### TactileMouseQuery
 This class implements the `PositionQuery` defined in libSCRATCHy. Please refer to the [interface documentation](https://github.com/OpenTactile/SCRATCHy#positionquery) for further details.
